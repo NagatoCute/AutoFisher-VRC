@@ -8,4 +8,4 @@
 
 读取日志+OSC输入控制，合法辅助
 
-[exe版本下载](https://github.com/arcxingye/VRChat-AutoFisher/releases/download/exe/fish.exe)
+[exe版本下载](https://github.com/arcxingye/AutoFisher-VRC/releases/download/exe/fish.exe)

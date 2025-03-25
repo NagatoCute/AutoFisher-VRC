@@ -9,3 +9,5 @@
 读取日志+OSC输入控制，合法辅助
 
 [exe版本下载](https://github.com/arcxingye/AutoFisher-VRC/releases/download/exe/fish.exe)
+
+exe通过Nuitka打包难免报毒，不放心的可以下py文件运行

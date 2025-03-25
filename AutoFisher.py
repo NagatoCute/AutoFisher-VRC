@@ -99,8 +99,22 @@ class AutoFishingApp:
         self.log_handler = VRChatLogHandler(self.fish_on_hook)
         self.log_handler.start_monitor()
 
+        self.send_click(False)
+
+    def toggle(self):
+        self.running = not self.running
+        self.start_btn.config(text="停止" if self.running else "开始")
+        if not self.running:
+            self.emergency_release()
+        self.update_status()
+
+    def emergency_release(self):
+        self.send_click(False)
+        self.current_action = "已停止"
+        self.update_status()
+
     def setup_ui(self):
-        self.root.title("自动钓鱼v1.2 By arcxingye")
+        self.root.title("自动钓鱼v1.3 By arcxingye")
         
         params_frame = Frame(self.root)
         params_frame.grid(row=0, column=0, columnspan=2, padx=5, pady=2)
@@ -257,6 +271,7 @@ class AutoFishingApp:
             self.last_cycle_end = time.time()
 
     def on_close(self):
+        self.emergency_release()
         try:
             # 停止所有定时器
             if hasattr(self, 'timeout_timer') and self.timeout_timer:

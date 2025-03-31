@@ -6,7 +6,7 @@
 
 自动钓鱼，针对地图[A Simple Fishing World]
 
-读取日志+OSC输入控制，合法辅助
+读取日志+OSC输入控制，合法辅助，可完全后台的挂机脚本
 
 ![image](https://github.com/user-attachments/assets/6d03d0e9-c55a-4603-97a6-5dcade6d288e)
 

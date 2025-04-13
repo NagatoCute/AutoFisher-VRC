@@ -2,6 +2,7 @@ import os
 import time
 import random
 import threading
+import keyboard
 from tkinter import *
 from pythonosc import udp_client
 from watchdog.observers import Observer
@@ -94,18 +95,40 @@ class AutoFishingApp:
         self.last_cycle_end = 0
         self.timeout_timer = None
         self.osc_client = udp_client.SimpleUDPClient("127.0.0.1", 9000)
-        
+        self.last_toggle_time = 0  # 用于防抖
+
         self.setup_ui()
         self.log_handler = VRChatLogHandler(self.fish_on_hook)
         self.log_handler.start_monitor()
 
         self.send_click(False)
+        
+        # 使用 keyboard 库监听全局 F5 键，添加防抖
+        keyboard.on_press_key('f5', self.handle_f5)
+
+    def handle_f5(self, event):
+        """处理 F5 按键事件，添加防抖逻辑"""
+        current_time = time.time()
+        if current_time - self.last_toggle_time < 0.5:  # 防抖：0.5秒内只触发一次
+            return
+        self.last_toggle_time = current_time
+        self.toggle()
 
     def toggle(self):
         self.running = not self.running
         self.start_btn.config(text="停止" if self.running else "开始")
         if not self.running:
             self.emergency_release()
+            # 重置保护状态和动作状态，防止后续自动抛竿
+            self.protected = False
+            self.current_action = "已停止"
+            self.last_cycle_end = time.time()
+            # 取消所有定时器
+            if self.timeout_timer and self.timeout_timer.is_alive():
+                self.timeout_timer.cancel()
+                self.timeout_timer = None
+        else:
+            self.current_action = "等待"
         self.update_status()
 
     def emergency_release(self):
@@ -163,13 +186,6 @@ class AutoFishingApp:
         
         self.status_label = Label(control_frame, text="[等待]", width=15, anchor=W)
         self.status_label.pack(side=LEFT)
-
-    def toggle(self):
-        self.running = not self.running
-        self.start_btn.config(text="停止" if self.running else "开始")
-        if self.running:
-            self.current_action = "等待"
-            self.update_status()
 
     def update_status(self):
         self.status_label.config(text=f"[{self.current_action}]")
@@ -261,8 +277,17 @@ class AutoFishingApp:
             self.protected = True
             self.last_cycle_end = time.time()
             
+            # 再次检查运行状态，避免在关闭后仍继续执行
+            if not self.running:
+                return
+                
             # 正常收杆流程
             self.perform_reel()
+            
+            # 再次检查运行状态，避免抛竿
+            if not self.running:
+                return
+                
             # 执行抛竿流程
             self.perform_cast()
             
@@ -285,6 +310,9 @@ class AutoFishingApp:
             # 停止日志检测线程
             if hasattr(self.log_handler, 'check_thread'):
                 self.log_handler.check_thread.join(timeout=0.5)
+                
+            # 清理 keyboard 监听
+            keyboard.unhook_all()
                 
         except Exception as e:
             print(f"关闭时发生错误: {e}")

@@ -4,7 +4,7 @@
 [![OSC Protocol](https://img.shields.io/badge/OSC-1.1-brightgreen)](https://opensoundcontrol.stanford.edu/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
-自动钓鱼，针对地图[A Simple Fishing World]
+自动钓鱼
 
 读取日志+OSC输入控制，合法辅助，可完全后台的挂机脚本
 

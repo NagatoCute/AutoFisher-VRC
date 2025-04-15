@@ -117,7 +117,7 @@ class AutoFishingApp:
         self.update_status()
 
     def setup_ui(self):
-        self.root.title("自动钓鱼v1.4.1 By arcxingye")
+        self.root.title("自动钓鱼v1.4.2")
         
         params_frame = Frame(self.root)
         params_frame.grid(row=0, column=0, columnspan=2, padx=5, pady=2)
@@ -135,7 +135,7 @@ class AutoFishingApp:
         self.rest_time.grid(row=row_counter, column=1, padx=5, pady=2)
         row_counter += 1
 
-        Label(params_frame, text="超时时间 (分钟):").grid(row=row_counter, padx=5, pady=2, sticky=W)
+        Label(params_frame, text="超时重钓 (分):").grid(row=row_counter, padx=5, pady=2, sticky=W)
         self.timeout_limit = Entry(params_frame)
         self.timeout_limit.insert(0, "5")
         self.timeout_limit.grid(row=row_counter, column=1, padx=5, pady=2)
@@ -146,7 +146,7 @@ class AutoFishingApp:
         self.start_btn = Button(control_frame, text="开始", command=self.toggle, width=8)
         self.start_btn.pack(side=LEFT, padx=(0, 10))
         
-        self.status_label = Label(control_frame, text="[等待]", width=15, anchor=W)
+        self.status_label = Label(control_frame, text="[开发者arcxingye]", width=15, anchor=W)
         self.status_label.pack(side=LEFT)
 
     def update_status(self):
@@ -192,7 +192,7 @@ class AutoFishingApp:
         start_time = time.time()
         self.detected_time = None
         
-        while time.time() - start_time < 30:  # 25改为30
+        while time.time() - start_time < 30:
             content = self.log_handler.safe_read_file()
             
             if "Fish Pickup attached to rod Toggles(True)" in content:
@@ -221,9 +221,6 @@ class AutoFishingApp:
         
         self.send_click(False)
         self.detected_time = None
-        
-        if not success:
-            print("收杆超时，强制结束")
 
     def perform_cast(self):
         if not self.first_cast:
@@ -239,7 +236,7 @@ class AutoFishingApp:
             self.first_cast = False  # 标记首次抛竿完成
 
         # 蓄力抛竿
-        self.current_action = "蓄力中"
+        self.current_action = "鱼竿蓄力中"
         self.update_status()
         cast_duration = self.get_param(self.cast_time, 2)
         self.send_click(True)
@@ -247,7 +244,7 @@ class AutoFishingApp:
         self.send_click(False)
 
         # 抛竿后等待
-        self.current_action = "等待上钩"
+        self.current_action = "等待鱼上钩"
         self.update_status()
         self.start_timeout_timer()
         time.sleep(3)

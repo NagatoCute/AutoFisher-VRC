@@ -8,22 +8,16 @@
 
 读取日志+OSC输入控制，合法辅助，可完全后台的挂机脚本
 
-![image](https://github.com/user-attachments/assets/c251c5de-ffe3-4283-a553-6f01ca834fd7)
+![image](https://github.com/user-attachments/assets/53213bee-c6dd-4d24-8551-0ced09c8f99e)
 
 使用方法：https://www.bilibili.com/video/BV1TqotYrEDe
 
-[exe版本下载](https://github.com/arcxingye/AutoFisher-VRC/releases/download/exe/fish.exe) 【exe通过Nuitka打包难免报毒，不放心的可以下py文件运行】
+[exe版本下载](https://github.com/arcxingye/AutoFisher-VRC/releases/download/exe/autofish.exe) 【exe通过Nuitka打包难免报毒，不放心的可以下py文件运行】
 
 说明
 
-收杆时间：上钩时按多少秒的左键
-
 休息时间：上一轮钓鱼到下一轮钓鱼的间隔
 
-蓄力时间：左键抛竿按多少秒
+蓄力时间：抛竿蓄力多少秒
 
-抛竿后等待：抛竿后至少等多少秒才算有效上钩
-
-超时时间：超过多少分钟重新进行钓鱼
-
-随机范围：向收杆时间和休息时间随机添加多少秒
+超时重钓：超过多少分钟没上鱼则重新进行钓鱼

@@ -8,7 +8,7 @@
 
 读取日志+OSC输入控制，合法辅助，可完全后台的挂机脚本
 
-![image](https://github.com/user-attachments/assets/6d03d0e9-c55a-4603-97a6-5dcade6d288e)
+![image](https://github.com/user-attachments/assets/c251c5de-ffe3-4283-a553-6f01ca834fd7)
 
 使用方法：https://www.bilibili.com/video/BV1TqotYrEDe
 

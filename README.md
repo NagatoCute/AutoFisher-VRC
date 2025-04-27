@@ -12,7 +12,7 @@
 
 使用方法：https://www.bilibili.com/video/BV1TqotYrEDe
 
-[exe版本下载](https://github.com/arcxingye/AutoFisher-VRC/releases/download/exe/autofish.exe) 【exe通过Nuitka打包难免报毒，不放心的可以下py文件运行】
+[可执行文件exe版本下载](https://github.com/arcxingye/AutoFisher-VRC/releases/download/exe/autofish1.4.2.rar)
 
 说明
 

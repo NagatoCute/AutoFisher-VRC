@@ -3,6 +3,7 @@ import time
 import threading
 from tkinter import *
 from pythonosc import udp_client
+from tkinter import font as tkFont
 from watchdog.observers import Observer
 from watchdog.events import FileSystemEventHandler
 
@@ -117,41 +118,88 @@ class AutoFishingApp:
         self.update_status()
 
     def setup_ui(self):
-        self.root.title("自动钓鱼v1.4.2")
-        
-        params_frame = Frame(self.root)
-        params_frame.grid(row=0, column=0, columnspan=2, padx=5, pady=2)
-        
-        row_counter = 0
-        Label(params_frame, text="蓄力时间 (秒):").grid(row=row_counter, padx=5, pady=2, sticky=W)
-        self.cast_time = Entry(params_frame)
-        self.cast_time.insert(0, "2")
-        self.cast_time.grid(row=row_counter, column=1, padx=5, pady=2)
-        row_counter += 1
+        self.root.title("自动钓鱼v1.5.0-alhpa.1")
+        self.root.geometry("300x270")
+        self.root.resizable(False, False)
+        self.colors = {
+            "bg": "#0A2463",
+            "fg": "#D8F3DC",
+            "frame_bg": "#1E4299",
+            "entry_bg": "#0A2463",
+            "entry_fg": "#90E0EF",
+            "button_bg": "#3B82F6",
+            "button_fg": "#FFFFFF",
+            "button_active_bg": "#2563EB",
+            "label_fg": "#D8F3DC",
+            "status": {
+                "default": "#FFFFFF",
+                "running": "#70e000",
+                "waiting": "#00b4d8",
+                "action": "#ffdd00",
+                "stopped": "#ef233c"
+            }
+        }
 
-        Label(params_frame, text="休息时间 (秒):").grid(row=row_counter, padx=5, pady=2, sticky=W)
-        self.rest_time = Entry(params_frame)
-        self.rest_time.insert(0, "3")
-        self.rest_time.grid(row=row_counter, column=1, padx=5, pady=2)
-        row_counter += 1
+        self.root.config(bg=self.colors["bg"])
 
-        Label(params_frame, text="超时重钓 (分):").grid(row=row_counter, padx=5, pady=2, sticky=W)
-        self.timeout_limit = Entry(params_frame)
-        self.timeout_limit.insert(0, "5")
-        self.timeout_limit.grid(row=row_counter, column=1, padx=5, pady=2)
+        main_font = tkFont.Font(family="Verdana", size=10)
+        status_font = tkFont.Font(family="Verdana", size=11, weight="bold")
+        button_font = tkFont.Font(family="Verdana", size=10, weight="bold")
 
-        control_frame = Frame(self.root)
-        control_frame.grid(row=1, column=0, columnspan=2, pady=5)
-        
-        self.start_btn = Button(control_frame, text="开始", command=self.toggle, width=8)
-        self.start_btn.pack(side=LEFT, padx=(0, 10))
-        
-        self.status_label = Label(control_frame, text="[开发者arcxingye]", width=15, anchor=W)
-        self.status_label.pack(side=LEFT)
+        params_frame = Frame(self.root, bg=self.colors["frame_bg"], padx=15, pady=10,
+                             borderwidth=1, relief=SOLID)
+        params_frame.grid(row=0, column=0, padx=10, pady=10, sticky="ew")
+        self.root.columnconfigure(0, weight=1)
+
+        params_frame.columnconfigure(1, weight=1)
+
+        def create_param_entry(parent, text, default_value, row):
+            Label(parent, text=text, bg=self.colors["frame_bg"], fg=self.colors["label_fg"], font=main_font).grid(
+                row=row, column=0, padx=5, pady=6, sticky=W)
+            entry = Entry(parent, width=9, bg=self.colors["entry_bg"], fg=self.colors["entry_fg"], font=main_font,
+                          relief=FLAT, insertbackground=self.colors["fg"], highlightthickness=2,
+                          highlightbackground=self.colors["frame_bg"], highlightcolor=self.colors["button_bg"])
+            entry.insert(0, default_value)
+            entry.grid(row=row, column=1, padx=5, pady=6, sticky=E)
+            return entry
+
+        self.cast_time = create_param_entry(params_frame, "蓄力时间 (秒):", "2", 0)
+        self.rest_time = create_param_entry(params_frame, "休息时间 (秒):", "3", 1)
+        self.reel_time = create_param_entry(params_frame, "收杆时间 (秒):", "2", 2)
+        self.timeout_limit = create_param_entry(params_frame, "超时重钓 (分):", "5", 3)
+
+        control_frame = Frame(self.root, bg=self.colors["bg"], pady=5)
+        control_frame.grid(row=1, column=0, padx=10, pady=(0, 10), sticky="ew")
+        control_frame.columnconfigure(1, weight=1)
+
+        self.start_btn = Button(control_frame, text="开始", command=self.toggle, font=button_font,
+                                bg=self.colors["button_bg"], fg=self.colors["button_fg"],
+                                activebackground=self.colors["button_active_bg"],
+                                activeforeground=self.colors["button_fg"],
+                                relief=RAISED, borderwidth=1, width=12, height=2)
+        self.start_btn.grid(row=0, column=0, padx=(0, 15))
+
+        self.status_label = Label(control_frame, text="[开发者 arcxingye]",
+                                  font=status_font, bg=self.colors["bg"], fg=self.colors["status"]["default"],
+                                  width=18,
+                                  anchor=W)
+        self.status_label.grid(row=0, column=1, sticky="ew")
 
     def update_status(self):
-        self.status_label.config(text=f"[{self.current_action}]")
-        self.root.update()
+        if not hasattr(self, 'status_label'): return
+
+        status_text = self.current_action
+        color = self.colors["status"]["default"]
+        if "上钩" in status_text or "等待" in status_text:
+            color = self.colors["status"]["waiting"]
+        elif "收杆" in status_text or "蓄力" in status_text or "抛竿" in status_text:
+            color = self.colors["status"]["action"]
+        elif "停止" in status_text or "超时" in status_text:
+            color = self.colors["status"]["stopped"]
+        elif self.running:
+            color = self.colors["status"]["running"]
+
+        self.root.after(0, self.status_label.config, {'text': f"[{status_text}]", 'fg': color})
 
     def send_click(self, press):
         self.osc_client.send_message("/input/UseRight", 1 if press else 0)
@@ -210,12 +258,13 @@ class AutoFishingApp:
         self.current_action = "收杆中"
         self.update_status()
         self.send_click(True)
-        
+        # 获取 UI 设置的收杆时间（默认2秒）
+        reel_duration = self.get_param(self.reel_time, 2)
         success = self.check_fish_pickup()
-        
+
         if success and self.detected_time:
             elapsed = time.time() - self.detected_time
-            remaining_time = max(0, 2 - elapsed)
+            remaining_time = max(0, reel_duration - elapsed)
             if remaining_time > 0:
                 time.sleep(remaining_time)
         

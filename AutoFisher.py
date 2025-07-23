@@ -317,7 +317,7 @@ class AutoFishingApp:
             if hasattr(self, 'timeout_timer') and self.timeout_timer:
                 self.timeout_timer.cancel()
             
-            if self.observer.is_alive():
+            if getattr(self, 'observer', None) and self.observer.is_alive():
                 self.observer.stop()
                 self.observer.join(timeout=1)
             
